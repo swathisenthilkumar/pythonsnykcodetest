@@ -7,5 +7,5 @@ curl -Lo ./snyk "https://github.com/snyk/snyk/releases/download/v1.1060.0/snyk-l
         echo "----------Authenticating Snyk-----------"
          ./snyk auth $SNYK_TOKEN
         echo "----------Snyk code Scanning-----------"
-         ./snyk code test --report --project-name="swathisenthilkumar/pythonsnykcodetest"
+         ./snyk code test --report --project-name="pythonsnykcodetest"
         
