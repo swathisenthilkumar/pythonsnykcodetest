@@ -1,0 +1,5 @@
+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
+
+https://github.com/swathisenthilkumar/webgoattruffleRegex.git
+
+java -jar  C:\Users\s.k.senthilkumar\Downloads\bfg-1.12.16.jar --delete-files 'regexes(2).json' dvja.git
