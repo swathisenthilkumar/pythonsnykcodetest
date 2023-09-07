@@ -8,4 +8,5 @@ curl -Lo ./snyk "https://github.com/snyk/snyk/releases/download/v1.1200.0/snyk-l
          ./snyk auth $SNYK_TOKEN
         echo "----------Snyk code Scanning-----------"
          ./snyk code test --report --project-name="snykcodepoc"
+         
         
