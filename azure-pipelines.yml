@@ -4,43 +4,43 @@
 # https://aka.ms/yaml
 
 # PRs to main
-pr:
-- main
+ pr:
+  - main
 
-trigger:
-- main
+ trigger:
+  - main
 
-jobs:
-- job: SecretsCheck
+ jobs:
+      - job: SecretsCheck
 
-pool:
-  vmImage: ubuntu-latest
+ pool:
+      vmImage: ubuntu-latest
 
-  steps:
-    
-  - script: |
-      # Set up CURL headers + URI
-      headers="Authorization: Bearer $(System.AccessToken)"
-       uri="$(System.TeamFoundationServerUri)$(System.TeamProject)/_apis/build/builds/$(Build.BuildId)/changes"
+      steps:
+        
+      - script: |
+          # Set up CURL headers + URI
+          headers="Authorization: Bearer $(System.AccessToken)"
+          uri="$(System.TeamFoundationServerUri)$(System.TeamProject)/_apis/build/builds/$(Build.BuildId)/changes"
+          
+          # Set count of changes in this Push to the ChangesCount variable
+          ChangesCount=$(echo $(curl -sSL -H "$headers" "$uri") | jq '.count')
+
+          # If PR, add 1 to ChangesCount.
+          if [ "$(Build.Reason)" == "PullRequest" ]; then ChangesCount=$(($ChangesCount+1)); fi
+
+          # Export ChangesCount variable for use in other steps
+          echo "##vso[task.setvariable variable=ChangesCount]$(echo $ChangesCount )"
       
-      # Set count of changes in this Push to the ChangesCount variable
-      ChangesCount=$(echo $(curl -sSL -H "$headers" "$uri") | jq '.count')
+      - checkout: self
+        fetchDepth: $(ChangesCount)
+        displayName: "Git Checkout"
 
-      # If PR, add 1 to ChangesCount.
-      if [ "$(Build.Reason)" == "PullRequest" ]; then ChangesCount=$(($ChangesCount+1)); fi
-
-      # Export ChangesCount variable for use in other steps
-      echo "##vso[task.setvariable variable=ChangesCount]$(echo $ChangesCount )"
-  
-  - checkout: self
-    fetchDepth: $(ChangesCount)
-    displayName: "Git Checkout"
-
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        curl -q "https://storage.googleapis.com/thog-releases/trufflehog-scanner/latest/fetch.sh" | bash
-                ./trufflehog --fail-verified --no-update git main HEAD
-                  status=$?
-                  echo $status
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+            curl -q "https://storage.googleapis.com/thog-releases/trufflehog-scanner/latest/fetch.sh" | bash
+                    ./trufflehog --fail-verified --no-update git main HEAD
+                      status=$?
+                      echo $status
