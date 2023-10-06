@@ -1,5 +1,6 @@
+#This filter fails if there are: >4 medium, upgradleable vulns OR >4 high, upgradeable vulns
 version: 2
 customFilters:
-  filter: ".vulnerabilities |= map(if .isUpgradable == true and .severity == \"high\" then . else empty end)"
-  pass: "[.vulnerabilities[] | select(.severity == \"high\" and .isUpgradable == true)] | length"
-  msg: "High Severity issues detected. Please review upgrade steps"
+  filter: "if ([.runs[].results[] | select(.level == \"warning\")] | length > 4) or ([.runs[].results[] | select(.level == \"error\")] | length > 4) then .runs |= map(if (.level == \"warning\" or .level == \"error\") then . else empty end) else .runs |= map(empty) end"
+  pass: "if ([.runs[].results[] | select(.level == \"warning\")] | length > 4) or ([.runs[].results[] | select(.level == \"error\")] | length > 4) then 1 else 0 end"
+  msg: "High and medium severity & upgradeable vulns found. Exit Code 1"
