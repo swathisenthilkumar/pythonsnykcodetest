@@ -66,3 +66,12 @@ public class bad1 extends HttpServlet {
         ValueExpression vex = expressionFactory.createValueExpression(elContext, expression, String.class);
         return (String) vex.getValue(elContext);
     }
+
+    public String evaluateExpression(String expression) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExpressionFactory expressionFactory = context.getApplication().getExpressionFactory();
+        ELContext elContext = context.getELContext();
+        // deepid: tainted-code-injection-from-http-request 
+        ValueExpression vex = expressionFactory.createValueExpression(elContext, expression, String.class);
+        return (String) vex.getValue(elContext);
+    }
