@@ -51,4 +51,4 @@ jobs:
   # Scan for leaked secrets (Open-Source)
   - script: |
       docker run --rm -v "$(pwd)":/tmp us-docker.pkg.dev/thog-artifacts/public/scanner:latest \
-      --fail-verified --no-update git file:///tmp/
+      git --only-verified --fail-verified --no-update $(git -C /tmp log --reverse --pretty=format:"%H" | head -n 1) $(git -C /tmp rev-parse HEAD) /tmp
