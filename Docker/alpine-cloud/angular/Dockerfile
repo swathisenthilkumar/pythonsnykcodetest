@@ -24,7 +24,7 @@
 ############
 
 # base image
-FROM nginx:1.14.1-alpine as run
+FROM nginx:1.25.1-alpine as run
 
 
 ## Remove default nginx website
